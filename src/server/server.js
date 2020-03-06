@@ -14,8 +14,8 @@ let T = new Twit({
 });
 
 let stream = T.stream("statuses/filter", {
-  track: ["gripe"],
-  language: "es"
+  track: ["coronavirus"],
+  language: "en"
 });
 
 stream.on("tweet", tweet => {
@@ -27,6 +27,14 @@ stream.on("tweet", tweet => {
     result = sentiment.analyze(tweet.text);
   }
   tweet.sentiment = result;
+  const score = tweet.sentiment.comparative;
+  if (score === 0) {
+    tweet.color = "#FBBC05";
+  } else if (score > 0) {
+    tweet.color = "#34A853";
+  } else {
+    tweet.color = "#EA4335";
+  }
   if (!tweet.text.includes("RT")) {
     io.sockets.emit("stream", tweet);
   }

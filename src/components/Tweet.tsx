@@ -7,8 +7,7 @@ type TweetProps = {
 
 const Tweet: React.FC<TweetProps> = ({ tweet }) => {
   return (
-    <TweetStyled score={tweet.sentiment.comparative}>
-      <img src={tweet.user.profile_image_url} />
+    <TweetStyled color={tweet.color}>
       <span>
         {tweet.extended_tweet ? tweet.extended_tweet.full_text : tweet.text}
       </span>
@@ -19,24 +18,19 @@ const Tweet: React.FC<TweetProps> = ({ tweet }) => {
 export default Tweet;
 
 interface TweetStyledProps {
-  score: number;
+  color: string;
 }
 
 const TweetStyled = styled.div<TweetStyledProps>`
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  margin: 0.5rem 3rem;
-  background-color: ${p => {
-    if (p.score === 0) {
-      return `#FBBC05`;
-    } else if (p.score < 0) {
-      return `#EA4335`;
-    } else {
-      return `#34A853`;
-    }
-  }};
-  padding: 1rem;
+  margin: 0.5rem;
+  width: 28rem;
+  height: 7rem;
+  background-color: ${p => p.color};
+  padding: 0.5rem;
+  overflow: hidden;
   & > img {
     border-radius: 50%;
     margin: 1rem;
