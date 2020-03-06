@@ -14,9 +14,13 @@ let T = new Twit({
 });
 
 let stream = T.stream("statuses/filter", {
-  track: ["coronavirus"],
-  language: "en"
+  track: ["coronavirus"]
 });
+
+let count = 1;
+let good = 0;
+let bad = 0;
+let neutral = 0;
 
 stream.on("tweet", tweet => {
   let sentiment = new Sentiment();
@@ -30,12 +34,17 @@ stream.on("tweet", tweet => {
   const score = tweet.sentiment.comparative;
   if (score === 0) {
     tweet.color = "#FBBC05";
+    neutral++;
   } else if (score > 0) {
     tweet.color = "#34A853";
+    good++;
   } else {
     tweet.color = "#EA4335";
+    bad++;
   }
   if (!tweet.text.includes("RT")) {
     io.sockets.emit("stream", tweet);
   }
+  io.sockets.emit("count", { count, good, bad, neutral });
+  count++;
 });

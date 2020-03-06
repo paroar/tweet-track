@@ -1,7 +1,6 @@
 import React, { Component } from "react";
-import GoogleMapReact from "google-map-react";
 import io from "socket.io-client";
-import Svg from "./Svg";
+import { Map, TileLayer, Marker, Popup } from "react-leaflet";
 var socket = io("http://127.0.0.1:8080");
 
 interface TweetListInterface {
@@ -14,14 +13,6 @@ class SimpleMap extends Component<{}, TweetListInterface> {
     this.state = { tweets: [] };
   }
 
-  defaultProps = {
-    center: {
-      lat: 40.476924,
-      lng: -3.857556
-    },
-    zoom: 10
-  };
-
   componentDidMount() {
     socket.on("stream", (msg: any) => {
       if (msg.place) {
@@ -30,22 +21,36 @@ class SimpleMap extends Component<{}, TweetListInterface> {
     });
   }
 
+  location = () => {
+    navigator.geolocation.getCurrentPosition(position => {
+      console.log("POS", position);
+    });
+  };
+
   render() {
+    this.location();
     return (
-      <div style={{ height: "100vh", width: "100%" }}>
-        <GoogleMapReact
-          defaultCenter={this.defaultProps.center}
-          defaultZoom={this.defaultProps.zoom}
-        >
-          {this.state.tweets.map(t => (
-            <Svg
-              lat={t.place.bounding_box.coordinates[0][0][1]}
-              lng={t.place.bounding_box.coordinates[0][0][0]}
-              iconName="icon-location-pin"
-              svgFill={t.color}
+      <div>
+        <div id="mapid">
+          <Map center={[0, 0]} zoom={2}>
+            <TileLayer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             />
-          ))}
-        </GoogleMapReact>
+            {this.state.tweets.map(t => (
+              <Marker
+                position={[
+                  t.place.bounding_box.coordinates[0][0][1],
+                  t.place.bounding_box.coordinates[0][0][0]
+                ]}
+              >
+                <Popup>
+                  <a href="">{t.text}</a>
+                </Popup>
+              </Marker>
+            ))}
+          </Map>
+        </div>
       </div>
     );
   }

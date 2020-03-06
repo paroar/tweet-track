@@ -1,0 +1,49 @@
+.sidebarMap {
+  position: fixed;
+  right: 0.5rem;
+  z-index: 999;
+  display: grid;
+  justify-items: center;
+  background-color: rgba(255, 255, 255, 0.5);
+  padding: 0.5rem;
+  margin: 0.5rem;
+  border-radius: 50rem;
+
+  &:hover {
+    background-color: white;
+    cursor: pointer;
+  }
+}
+
+.recharts-layer,
+.recharts-surface {
+  cursor: pointer;
+}
+
+.recharts-sector {
+  stroke: none;
+}
+
+.input {
+  position: absolute;
+  z-index: 999;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.topic {
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 50rem;
+  padding: 0.4rem 0;
+  width: 15rem;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.5);
+  transition: all 0.3s;
+
+  &:focus {
+    background-color: white;
+    width: 25rem;
+  }
+}

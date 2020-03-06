@@ -7,14 +7,14 @@ type SvgProps = {
   lng: number;
   class?: string;
   iconName: string;
-  svgFill?: string;
+  color?: string;
 };
 
 const Svg: React.FC<SvgProps> = props => {
-  const { iconName, svgFill } = props;
+  const { iconName, color } = props;
 
   return (
-    <SvgStyled className={iconName} fill={svgFill ? svgFill : ""}>
+    <SvgStyled className={iconName} fill={color ? color : ""}>
       <use href={`${sprite}#${iconName}`} />
     </SvgStyled>
   );
