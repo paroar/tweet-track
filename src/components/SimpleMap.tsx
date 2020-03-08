@@ -1,38 +1,33 @@
-import React, { Component } from "react";
+import React from "react";
 import io from "socket.io-client";
 import { Map, TileLayer, Marker, Popup } from "react-leaflet";
 var socket = io("http://127.0.0.1:8080");
 
-interface TweetListInterface {
-  tweets: any[];
-}
+type SimpleMapsProps = {
+  location: number[];
+};
 
-class SimpleMap extends Component<{}, TweetListInterface> {
-  constructor(props: any) {
-    super(props);
-    this.state = { tweets: [] };
-  }
+class SimpleMap extends React.Component<SimpleMapsProps> {
+  state = {
+    tweets: [] as any[]
+  };
 
   componentDidMount() {
-    socket.on("stream", (msg: any) => {
+    socket.on("tweets", (msg: any) => {
       if (msg.place) {
         this.setState({ tweets: [...this.state.tweets, msg] });
       }
     });
   }
 
-  location = () => {
-    navigator.geolocation.getCurrentPosition(position => {
-      console.log("POS", position);
-    });
-  };
-
   render() {
-    this.location();
     return (
       <div>
         <div id="mapid">
-          <Map center={[0, 0]} zoom={2}>
+          <Map
+            center={[this.props.location[0], this.props.location[1]]}
+            zoom={3}
+          >
             <TileLayer
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -43,10 +38,9 @@ class SimpleMap extends Component<{}, TweetListInterface> {
                   t.place.bounding_box.coordinates[0][0][1],
                   t.place.bounding_box.coordinates[0][0][0]
                 ]}
+                key={t.id}
               >
-                <Popup>
-                  <a href="">{t.text}</a>
-                </Popup>
+                <Popup>{t.text}</Popup>
               </Marker>
             ))}
           </Map>
