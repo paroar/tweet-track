@@ -1,5 +1,6 @@
 const Twit = require("twit");
 const sentiment = require("../sentiment/sentimentAnalysis.js");
+const cors = require("cors");
 require("dotenv").config();
 
 module.exports = (app, io) => {
@@ -10,6 +11,7 @@ module.exports = (app, io) => {
     access_token_secret: process.env.ACCESS_TOKEN_SECRET
   });
 
+  app.locals.stream = null;
   app.locals.topic = "coronavirus";
   app.locals.count = 1;
   app.locals.good = 0;
@@ -35,7 +37,11 @@ module.exports = (app, io) => {
     stream.on("tweet", tweet => {
       sendMessage(tweet);
     });
+    stream.on("error", error => {
+      console.log(error);
+    });
     isStream = true;
+    app.locals.stream = stream;
   };
 
   const sendMessage = msg => {
@@ -58,4 +64,14 @@ module.exports = (app, io) => {
     app.locals.bad = 0;
     app.locals.neutral = 0;
   };
+
+  app.get("/changeTopic", cors(), (req, res) => {
+    app.locals.stream.stop();
+    app.locals.topic = req.query.topic;
+    res.json({
+      status: "success",
+      yay: app.locals.topic
+    });
+    stream();
+  });
 };

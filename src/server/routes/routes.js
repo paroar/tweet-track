@@ -1,5 +1,6 @@
 module.exports = app => {
-  app.post("/changeTopic", (req, res) => {
-    console.log(req.body);
+  app.get("/changeTopic", (req, res) => {
+    app.locals.stream.stop();
+    console.log(req.query);
   });
 };

@@ -3,14 +3,14 @@ import React, { useState, useEffect } from "react";
 const InputMap = () => {
   const [state, setstate] = useState("coronavirus");
 
+  async function handleFetch() {
+    const res = await fetch(`http://localhost:8080/changeTopic?topic=${state}`);
+    const data = await res.json();
+    console.log(data);
+  }
+
   useEffect(() => {
-    fetch("http://localhost:8080/changeTopic", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ topic: state })
-    });
+    handleFetch();
   }, [state]);
 
   const handleInput = (e: string) => {
