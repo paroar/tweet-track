@@ -12,19 +12,14 @@ module.exports = (app, io) => {
   });
 
   app.locals.stream = null;
-  app.locals.topic = "coronavirus";
+  let topic = null;
   app.locals.count = 1;
   app.locals.good = 0;
   app.locals.bad = 0;
   app.locals.neutral = 0;
 
-  let isStream = false;
-
   io.on("connection", socket => {
-    if (!isStream) {
-      stream();
-      console.log("Client connected");
-    }
+    console.log("Client connected");
 
     socket.on("disconnect", () => {
       console.log("Client disconnected");
@@ -33,7 +28,7 @@ module.exports = (app, io) => {
   });
 
   const stream = () => {
-    let stream = T.stream("statuses/filter", { track: app.locals.topic });
+    let stream = T.stream("statuses/filter", { track: topic });
     stream.on("tweet", tweet => {
       sendMessage(tweet);
     });
@@ -67,11 +62,28 @@ module.exports = (app, io) => {
 
   app.get("/changeTopic", cors(), (req, res) => {
     app.locals.stream.stop();
-    app.locals.topic = req.query.topic;
+    topic = req.query.topic;
     res.json({
       status: "success",
-      yay: app.locals.topic
+      yay: topic
     });
+  });
+
+  app.get("/play", cors(), (req, res) => {
+    res.status(200).json({
+      status: "success",
+      yay: "play"
+    });
+    resetLocalCount();
     stream();
+  });
+
+  app.get("/pause", cors(), (req, res) => {
+    app.locals.stream.stop();
+    resetLocalCount();
+    res.json({
+      status: "success",
+      yay: "paused"
+    });
   });
 };

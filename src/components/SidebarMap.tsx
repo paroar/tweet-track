@@ -36,9 +36,12 @@ class SidebarMap extends Component<{}, SidebarMapInterface> {
 
   render() {
     return (
-      <div className="sidebarMap">
-        <RingChart data={this.percentages()} />
-      </div>
+      <>
+        <div className="sidebarMap">
+          <RingChart data={this.percentages()} />
+          <span>{this.state.count}</span>
+        </div>
+      </>
     );
   }
 }

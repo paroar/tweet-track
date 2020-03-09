@@ -31,6 +31,11 @@
   top: 1rem;
   left: 50%;
   transform: translateX(-50%);
+  display: grid;
+  justify-items: center;
+  align-items: center;
+  grid-auto-flow: column;
+  gap: 2rem;
 }
 
 .topic {
@@ -47,5 +52,27 @@
     background-color: white;
     width: 25rem;
     outline: none;
+  }
+}
+
+.icon {
+  padding: 0.3rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 50rem;
+  transition: all 0.3s;
+  margin-left: 0.5rem;
+  &:hover {
+    background-color: rgba(255, 255, 255, 1);
+    fill: orangered;
+  }
+  &-controller-paus {
+    fill: black;
+    cursor: pointer;
+  }
+  &-controller-play {
+    fill: black;
+    cursor: pointer;
   }
 }
