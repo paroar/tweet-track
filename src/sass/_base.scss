@@ -17,3 +17,22 @@ html {
   width: 100%;
   position: relative;
 }
+
+.modal {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-container {
+  width: 60%;
+  height: 60%;
+  background-color: white;
+}

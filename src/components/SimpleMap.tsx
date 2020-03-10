@@ -1,6 +1,8 @@
 import React from "react";
 import io from "socket.io-client";
 import { Map, TileLayer, Marker, Popup } from "react-leaflet";
+import Modal from "./Modal";
+import Tweet from "./Tweet";
 var socket = io("http://127.0.0.1:8080");
 
 type SimpleMapsProps = {
@@ -9,7 +11,9 @@ type SimpleMapsProps = {
 
 class SimpleMap extends React.Component<SimpleMapsProps> {
   state = {
-    tweets: [] as any[]
+    tweets: [] as any[],
+    modalInfo: {},
+    isModalShowing: false
   };
 
   componentDidMount() {
@@ -20,9 +24,22 @@ class SimpleMap extends React.Component<SimpleMapsProps> {
     });
   }
 
+  handleModal = (tweet: any) => {
+    this.setState({
+      modalInfo: tweet,
+      isModalShowing: true
+    });
+    console.log(tweet);
+  };
+
   render() {
     return (
       <div>
+        {this.state.isModalShowing ? (
+          <Modal>
+            <Tweet tweet={this.state.modalInfo}></Tweet>
+          </Modal>
+        ) : null}
         <div id="mapid">
           <Map
             center={[this.props.location[0], this.props.location[1]]}
@@ -40,7 +57,9 @@ class SimpleMap extends React.Component<SimpleMapsProps> {
                 ]}
                 key={t.id}
               >
-                <Popup>{t.text}</Popup>
+                <Popup>
+                  <div onClick={() => this.handleModal(t)}>{t.text}</div>
+                </Popup>
               </Marker>
             ))}
           </Map>
