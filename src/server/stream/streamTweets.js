@@ -11,7 +11,7 @@ module.exports = (app, io) => {
     access_token_secret: process.env.ACCESS_TOKEN_SECRET
   });
 
-  app.locals.stream = null;
+  let tStream = null;
   let topic = null;
   app.locals.count = 1;
   app.locals.good = 0;
@@ -35,8 +35,7 @@ module.exports = (app, io) => {
     stream.on("error", error => {
       console.log(error);
     });
-    isStream = true;
-    app.locals.stream = stream;
+    tStream = stream;
   };
 
   const sendMessage = msg => {
@@ -61,7 +60,7 @@ module.exports = (app, io) => {
   };
 
   app.get("/changeTopic", cors(), (req, res) => {
-    app.locals.stream.stop();
+    tStream && tStream.stop();
     topic = req.query.topic;
     res.json({
       status: "success",
@@ -74,16 +73,23 @@ module.exports = (app, io) => {
       status: "success",
       yay: "play"
     });
-    resetLocalCount();
     stream();
   });
 
   app.get("/pause", cors(), (req, res) => {
-    app.locals.stream.stop();
-    resetLocalCount();
+    tStream && tStream.stop();
     res.json({
       status: "success",
       yay: "paused"
+    });
+  });
+
+  app.get("/stop", cors(), (req, res) => {
+    tStream && tStream.stop();
+    resetLocalCount();
+    res.json({
+      status: "success",
+      yay: "stoped"
     });
   });
 };

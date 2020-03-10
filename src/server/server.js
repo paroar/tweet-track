@@ -5,7 +5,6 @@ const io = require("socket.io")(server);
 const bodyParser = require("body-parser");
 
 require("./stream/streamTweets.js")(app, io);
-//require("./routes/routes.js")(app);
 
 app.use(bodyParser.json());
 

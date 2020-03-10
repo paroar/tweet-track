@@ -39,7 +39,7 @@ class SidebarMap extends Component<{}, SidebarMapInterface> {
       <>
         <div className="sidebarMap">
           <RingChart data={this.percentages()} />
-          <span>{this.state.count}</span>
+          <h3 className="sidebarMap--tweet-count">{this.state.count}</h3>
         </div>
       </>
     );
