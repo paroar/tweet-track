@@ -1,9 +1,15 @@
-import React from "react";
+import React, { PropsWithChildren } from "react";
 
-const Modal = (props: any) => {
+type ModalProps = {
+  closeModal: () => void;
+};
+
+const Modal: React.FC<ModalProps> = props => {
   return (
-    <div className="modal">
-      <div className="modal-container">{props.children}</div>
+    <div className="modal" onClick={props.closeModal}>
+      <div className="modal-container" onClick={e => e.stopPropagation()}>
+        {props.children}
+      </div>
     </div>
   );
 };

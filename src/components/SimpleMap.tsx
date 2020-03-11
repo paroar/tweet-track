@@ -32,12 +32,19 @@ class SimpleMap extends React.Component<SimpleMapsProps> {
     console.log(tweet);
   };
 
+  closeModal = () => {
+    console.log("closing");
+    this.setState({
+      isModalShowing: false
+    });
+  };
+
   render() {
     return (
       <div>
         {this.state.isModalShowing ? (
-          <Modal>
-            <Tweet tweet={this.state.modalInfo}></Tweet>
+          <Modal closeModal={this.closeModal}>
+            <Tweet tweet={this.state.modalInfo} />
           </Modal>
         ) : null}
         <div id="mapid">
