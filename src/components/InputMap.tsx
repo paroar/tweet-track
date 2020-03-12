@@ -46,7 +46,7 @@ const InputMap = () => {
       <input
         className="topic"
         type="text"
-        placeholder="Topic..."
+        placeholder="Topic1;Topic2;..."
         value={state}
         onChange={e => handleFetch(e.target.value)}
       />

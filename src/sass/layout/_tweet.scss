@@ -1,6 +1,8 @@
 .tweet {
   display: grid;
-  grid-template-columns: 1fr repeat(6, 1fr) 1fr;
+  grid-template-columns: repeat(6, 1fr);
+  font-size: 1.4rem;
+  box-shadow: 1rem 1rem 2rem rgba(black, 0.3);
 
   &--banner {
     width: 100%;
@@ -8,22 +10,38 @@
   }
 
   &--user {
-    color: white;
-    background-color: darkblue;
-    grid-column: 2/-2;
-    transform: translateY(-50%);
+    grid-column: 1/-1;
     padding: 2rem;
     display: grid;
-    grid-template-columns: 1fr repeat(6, 1fr) 1fr;
+    grid-template-columns: repeat(12, 1fr);
     grid-template-rows: repeat(3, min-content);
+    gap: 1rem;
+    align-items: center;
+    background-color: rgba(#f7f7f7, 0.9);
+    border-bottom: 1px dashed black;
+
+    &__img {
+      border-radius: 50rem;
+      object-fit: cover;
+    }
 
     &__desc {
       grid-column: 1/-1;
       grid-row: 2/3;
     }
+
+    &__social {
+      grid-column: 1/-1;
+      grid-row: 3/4;
+      display: flex;
+      justify-content: space-between;
+    }
   }
 
   &--text {
+    margin: 0;
     grid-column: 1/-1;
+    padding: 2rem;
+    background-color: rgba(#f7f7f7, 0.9);
   }
 }

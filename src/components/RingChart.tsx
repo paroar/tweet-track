@@ -1,7 +1,7 @@
 import React from "react";
 import { PieChart, Pie, Cell } from "recharts";
 
-const COLORS = ["#50d890", "#d63447", "#ffd868"];
+const COLORS = ["#2AAD27", "#CB2B3E", "#FFD326"];
 
 type RingChartProps = {
   data: number[];

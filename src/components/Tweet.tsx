@@ -7,45 +7,38 @@ type TweetProps = {
 
 const Tweet: React.FC<TweetProps> = ({ tweet }) => {
   return (
-    <div className="tweet">
-      <img
-        src={tweet.user.profile_banner_url}
-        alt=""
-        className="tweet--banner"
-      />
-      <div className="tweet--user">
-        <img
-          src={tweet.user.profile_image_url}
-          alt=""
-          className="tweet--user__img"
-        />
+    <TweetStyled color={tweet.color}>
+      <div className="tweet">
+        <div className="tweet--user">
+          <img
+            src={tweet.user.profile_image_url}
+            alt=""
+            className="tweet--user__img"
+          />
 
-        <div>
-          <p>{tweet.user.name}</p>
+          <div>
+            {tweet.user.name}
+            <br />
+            <a
+              href={`https://twitter.com/${tweet.user.screen_name}`}
+              target="blank"
+            >
+              @{tweet.user.screen_name}
+            </a>
+          </div>
+          <p className="tweet--user__desc">{tweet.user.description}</p>
+        </div>
+
+        <p className="tweet--text">
           <a
-            href={`https://twitter.com/${tweet.user.screen_name}`}
+            href={`https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`}
             target="blank"
           >
-            <p>@{tweet.user.screen_name}</p>
+            {tweet.extended_tweet ? tweet.extended_tweet.full_text : tweet.text}
           </a>
-        </div>
-        <p className="tweet--user__desc">{tweet.user.description}</p>
-
-        <p>{tweet.user.followers_count} Followers</p>
-        <p>{tweet.user.friends_count} Friends</p>
-        <p>{tweet.user.location}</p>
-        <p>Joined {tweet.user.created_at}</p>
+        </p>
       </div>
-      <p className="tweet--text">
-        {tweet.extended_tweet ? tweet.extended_tweet.full_text : tweet.text}
-      </p>
-      <a
-        href={`https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`}
-        target="blank"
-      >
-        Link to post
-      </a>
-    </div>
+    </TweetStyled>
   );
 };
 
