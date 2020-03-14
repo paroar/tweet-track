@@ -85,7 +85,7 @@ class SimpleMap extends React.Component<SimpleMapsProps> {
         <div id="mapid">
           <Map
             center={[this.props.location[0], this.props.location[1]]}
-            zoom={15}
+            zoom={3}
           >
             <TileLayer
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
