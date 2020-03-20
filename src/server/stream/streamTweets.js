@@ -1,10 +1,7 @@
 const Twit = require("twit");
 const sentiment = require("../sentiment/sentimentAnalysis.js");
 const cors = require("cors");
-const elasticsearch = require("elasticsearch");
-const client = new elasticsearch.Client({
-  host: "localhost:9200"
-});
+const client = require("../elasticsearch/connection.js");
 require("dotenv").config();
 
 module.exports = (app, io) => {
@@ -44,22 +41,20 @@ module.exports = (app, io) => {
 
   const sendMessage = msg => {
     const tempTweet = sentiment(msg, app);
-    if (!tempTweet.text.includes("RT")) {
-      io.sockets.emit("tweets", tempTweet);
-      client.index(
-        {
-          index: "tweets",
-          type: "tweetType",
-          id: msg.id,
-          body: tempTweet
-        },
-        (err, resp, status) => {
-          if (err) {
-            console.log(err);
-          }
+    io.sockets.emit("tweets", tempTweet);
+    client.index(
+      {
+        index: "twitter",
+        id: msg.id,
+        body: tempTweet
+      },
+      (err, resp, status) => {
+        if (err) {
+          console.log(err);
         }
-      );
-    }
+      }
+    );
+
     io.sockets.emit("count", {
       count: app.locals.count,
       good: app.locals.good,

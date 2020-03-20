@@ -9,7 +9,6 @@ const InputMap = () => {
     setstate(e.trim());
     const res = await fetch(`http://localhost:8080/changeTopic?topic=${state}`);
     const data = await res.json();
-    console.log(data);
     setIsPlay(true);
   }
 
@@ -18,7 +17,7 @@ const InputMap = () => {
       handleFetch(state);
       const res = await fetch(`http://localhost:8080/play`);
       const data = await res.json();
-      console.log(data);
+
       setIsPlay(false);
     }
   }
@@ -26,14 +25,12 @@ const InputMap = () => {
   async function handlePause() {
     const res = await fetch(`http://localhost:8080/pause`);
     const data = await res.json();
-    console.log(data);
     setIsPlay(true);
   }
 
   async function handleStop() {
     const res = await fetch(`http://localhost:8080/stop`);
     const data = await res.json();
-    console.log(data);
     setIsPlay(true);
   }
 

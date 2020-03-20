@@ -12,7 +12,6 @@ function App() {
     });
   }, []);
 
-  console.log(location);
   return (
     <>
       <InputMap />

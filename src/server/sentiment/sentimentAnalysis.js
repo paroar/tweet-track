@@ -8,8 +8,8 @@ module.exports = (tweet, app) => {
   } else {
     result = sentiment.analyze(tweet.text);
   }
-  tweet.sentiment = result;
-  const score = tweet.sentiment.comparative;
+  tweet.sentiment = result.comparative;
+  const score = tweet.sentiment;
   if (score === 0) {
     tweet.color = "#FBBC05";
     app.locals.neutral++;

@@ -29,11 +29,9 @@ class SimpleMap extends React.Component<SimpleMapsProps> {
       modalInfo: tweet,
       isModalShowing: true
     });
-    console.log(tweet);
   };
 
   closeModal = () => {
-    console.log("closing");
     this.setState({
       isModalShowing: false
     });
@@ -75,6 +73,7 @@ class SimpleMap extends React.Component<SimpleMapsProps> {
   };
 
   render() {
+
     return (
       <div>
         {this.state.isModalShowing ? (
@@ -98,7 +97,7 @@ class SimpleMap extends React.Component<SimpleMapsProps> {
                   t.place.bounding_box.coordinates[0][0][0]
                 ]}
                 key={t.id}
-                icon={this.handleIconColor(t.sentiment.score)}
+                icon={this.handleIconColor(t.sentiment)}
               >
                 <Popup>
                   <div onClick={() => this.handleModal(t)}>{t.text}</div>
