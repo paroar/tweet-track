@@ -1,0 +1,119 @@
+version: '3.5'
+services:
+  es01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.2
+    container_name: es01
+    environment:
+      - node.name=es01
+      - cluster.name=es-docker-cluster
+      - discovery.seed_hosts=es02,es03
+      - cluster.initial_master_nodes=es01,es02,es03
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data01:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    networks:
+      - elastic
+  es02:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.2
+    container_name: es02
+    environment:
+      - node.name=es02
+      - cluster.name=es-docker-cluster
+      - discovery.seed_hosts=es01,es03
+      - cluster.initial_master_nodes=es01,es02,es03
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data02:/usr/share/elasticsearch/data
+    networks:
+      - elastic
+  es03:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.2
+    container_name: es03
+    environment:
+      - node.name=es03
+      - cluster.name=es-docker-cluster
+      - discovery.seed_hosts=es01,es02
+      - cluster.initial_master_nodes=es01,es02,es03
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data03:/usr/share/elasticsearch/data
+    networks:
+      - elastic
+  kibana:
+    depends_on: [es01,es02,es03]
+    image: docker.elastic.co/kibana/kibana:7.6.2
+    container_name: kibana
+    volumes:
+      - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
+    ports:
+      - 5601:5601
+    networks:
+      - elastic
+  logstash:
+    depends_on: [es01,es02,es03]
+    image: docker.elastic.co/logstash/logstash:7.6.2
+    container_name: logstash
+    volumes:
+      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
+    ports:
+      - 5000:5000
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    networks:
+      - elastic
+      - datanorm
+  mongo:
+    container_name: mongo
+    build:
+      context: mongo/
+    ports:
+      - 27017:27017
+    volumes:
+      - datadb:/data/db
+    networks: 
+      - mongodb   
+  nodejs:
+    container_name: nodejs
+    depends_on: [mongo]
+    build:
+      context: nodejs/
+    working_dir: /app
+    env_file: .env
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    ports:
+      - 8080:8080
+    command: sh -c 'node ./nodejs/server.js'
+    networks: 
+      - datanorm
+      - mongodb
+
+volumes:
+  data01:
+  data02:
+  data03:
+  datadb:
+
+networks:
+  elastic:
+  datanorm:
+  mongodb:
