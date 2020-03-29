@@ -1,8 +1,14 @@
 const Twit = require("twit");
 const sentiment = require("../sentiment/sentimentAnalysis.js");
 const cors = require("cors");
-const client = require("../elasticsearch/connection.js");
 require("dotenv").config();
+
+const MongoClient = require('mongodb').MongoClient;
+const url = "mongodb://localhost:27017/twitter";
+
+
+const fetch = require("node-fetch");
+const url2 = "http://localhost:5000";
 
 module.exports = (app, io) => {
   let T = new Twit({
@@ -42,18 +48,25 @@ module.exports = (app, io) => {
   const sendMessage = msg => {
     const tempTweet = sentiment(msg, app);
     io.sockets.emit("tweets", tempTweet);
-    client.index(
-      {
-        index: "twitter",
-        id: msg.id,
-        body: tempTweet
-      },
-      (err, resp, status) => {
-        if (err) {
-          console.log(err);
-        }
-      }
-    );
+
+    MongoClient.connect(url, (err, db) => {
+      try {
+        db.db("twitter").collection("tweets").insert(tempTweet);
+        db.close();
+      } catch (error) {}
+    })
+
+
+    fetch(url2, {
+      method: 'post',
+      body: JSON.stringify(tempTweet),
+      headers: { 'Content-Type': 'application/json' },
+    })
+      .then(res => res.json())
+      .then(json => console.log(json))
+      .catch(err => null);
+
+
 
     io.sockets.emit("count", {
       count: app.locals.count,
