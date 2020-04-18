@@ -61,18 +61,19 @@ services:
     image: docker.elastic.co/kibana/kibana:7.6.2
     container_name: kibana
     volumes:
-      - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
+      - ./docker/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
     ports:
       - 5601:5601
     networks:
       - elastic
   logstash:
     depends_on: [es01,es02,es03]
-    image: docker.elastic.co/logstash/logstash:7.6.2
+    build:
+      context: docker/logstash/
     container_name: logstash
     volumes:
-      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
-      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
+      - ./docker/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+      - ./docker/logstash/pipeline:/usr/share/logstash/pipeline:ro
     ports:
       - 5000:5000
     environment:
@@ -83,13 +84,14 @@ services:
   mongo:
     container_name: mongo
     build:
-      context: mongo/
+      context: docker/mongo/
     ports:
       - 27017:27017
     volumes:
       - datadb:/data/db
     networks: 
-      - mongodb   
+      - mongodb
+      - datanorm   
   nodejs:
     container_name: nodejs
     depends_on: [mongo]
