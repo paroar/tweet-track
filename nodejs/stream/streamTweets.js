@@ -2,6 +2,12 @@ const Twit = require("twit");
 const sentiment = require("../sentiment/sentimentAnalysis.js");
 const cors = require("cors");
 require("dotenv").config();
+
+var mongoose = require('mongoose');
+const dbconn = require("../connection/connection");
+dbconn.connectWithRetry();
+var conn =  mongoose.connection;
+
 const fetch = require("node-fetch");
 const logstash = "http://logstash:5000";
 
@@ -53,6 +59,9 @@ module.exports = (app, io) => {
       neutral: app.locals.neutral
     });
     app.locals.count++;
+
+    //mongo
+    conn.collection('tweets').insertOne(tempTweet);
 
     //logstash
     fetch(logstash, {
