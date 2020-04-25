@@ -1,35 +1,24 @@
-const Twit = require("twit");
-const sentiment = require("../sentiment/sentimentAnalysis.js");
-const cors = require("cors");
-require("dotenv").config();
+const twitter = require("./twitter.js");
+const T = twitter.getT();
 
-var mongoose = require('mongoose');
-const dbconn = require("../connection/connection");
-dbconn.connectWithRetry();
-var conn =  mongoose.connection;
+const sentiment = require("../sentiment/sentimentAnalysis.js");
+
+const cors = require("cors");
 
 const fetch = require("node-fetch");
-const logstash = "http://logstash:5000";
+const logstashUrl = {
+  es: "http://logstash:5000",
+  mongo: "http://logstashmongo:5001"
+}
 
 module.exports = (app, io) => {
 
-  let T = new Twit({
-    consumer_key: "qxo282tmtwEVhDXBqjdBwnYay",
-    consumer_secret: "0R5tXlAiWVb5CXaFGZFzfSJyjXy4w0LFJyc1Y1sxGEBUB5r3d7",
-    access_token: "1211253165296734208-8JCJ2BmZqJ5c8176tg7Cd9iqlkgdpe",
-    access_token_secret: "pWcIfKN1hAg7tRCPE50TDlcbgCIscoFkhylC2bxB2T2Jm"
-  });
-
   let tStream = null;
   let topic = null;
-  app.locals.count = 1;
-  app.locals.good = 0;
-  app.locals.bad = 0;
-  app.locals.neutral = 0;
 
   io.on("connection", socket => {
     console.log("Client connected");
-
+    resetLocalCount();
     socket.on("disconnect", () => {
       console.log("Client disconnected");
       resetLocalCount();
@@ -60,19 +49,14 @@ module.exports = (app, io) => {
     });
     app.locals.count++;
 
-    //mongo
-    conn.collection('tweets').insertOne(tempTweet);
-
     //logstash
-    fetch(logstash, {
-      method: 'post',
-      body: JSON.stringify(tempTweet),
-      headers: { 'Content-Type': 'application/json' },
-    })
-      .then(res => res.json())
-      .then(json => console.log(json))
-      .catch(err => null);
-
+    Object.values(logstashUrl).forEach( url => {
+      fetch(url, {
+        method: 'post',
+        body: JSON.stringify(tempTweet),
+        headers: { 'Content-Type': 'application/json' },
+      }).catch(err => console.log(err));
+    });
   };
 
   const resetLocalCount = () => {
