@@ -1,9 +1,10 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Map, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import { LocationContext } from "../context/LocationContext";
 import Modal from "./Modal";
 import Tweet from "./Tweet";
+import { ClearContext } from "../context/ClearContext";
 
 const greenIcon = L.icon({
   iconUrl: "./../img/green-marker.png",
@@ -32,14 +33,21 @@ const yellowIcon = L.icon({
 
 type SimpleMapProps = {
   tweets: any[];
+  clearStop: () => void
 }
 
 const SimpleMap: React.FC<SimpleMapProps> = (props) => {
 
   const { location } = useContext(LocationContext);
+  const { clear } = useContext(ClearContext);
+
 
   const [modalInfo, setModalInfo] = useState({});
   const [isModalShowing, setIsModalShowing] = useState(false);
+
+  useEffect(() => {
+    props.clearStop();
+  }, [clear]);
 
   const handleModal = (tweet: any) => {
     setModalInfo(tweet);

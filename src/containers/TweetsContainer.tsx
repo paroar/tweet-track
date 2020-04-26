@@ -3,12 +3,14 @@ import SimpleMap from "../components/SimpleMap";
 import io from "socket.io-client";
 const socket = io("http://127.0.0.1:8080");
 
+
 class TweetsContainer extends React.Component {
 
   state = {
-    tweets: [] as any[]
+    tweets: [] as any[],
+    clear: this.context.clear
   };
-
+  
   componentDidMount() {
     socket.on("tweets", (msg: any) => {
       if (msg.place) {
@@ -17,11 +19,14 @@ class TweetsContainer extends React.Component {
     });
   }
 
+  clearStop() {
+    this.setState({tweets : []});
+  }
+
   render() {
-      console.log(this.state.tweets);
-      
+    console.log(this.state.tweets);
     return (
-      <><SimpleMap tweets={this.state.tweets}/></>
+      <><SimpleMap tweets={this.state.tweets} clearStop={() => this.clearStop()}/></>
     );
   }
 }

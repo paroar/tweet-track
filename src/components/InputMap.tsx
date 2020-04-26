@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Svg from "./Svg";
+import { ClearContext } from "../context/ClearContext";
 
 const InputMap = () => {
-  const [inputTopic, setstate] = useState("");
+  const [inputTopic, setInputTopic] = useState("");
   const [isPlay, setIsPlay] = useState(true);
 
-  async function handleFetch(input: string) {
-    setstate(input.trim());
+  const { changeClear } = useContext(ClearContext);
+
+  async function handleInput(input: string) {
+    setInputTopic(input.trim());
     const res = await fetch(`http://localhost:8080/changeTopic?topic=${inputTopic}`);
     const data = await res.json();
     console.log(data);
@@ -15,7 +18,7 @@ const InputMap = () => {
 
   async function handlePlay() {
     if (inputTopic !== "") {
-      handleFetch(inputTopic);
+      handleInput(inputTopic);
       const res = await fetch(`http://localhost:8080/play`);
       const data = await res.json();
       console.log(data);
@@ -35,6 +38,8 @@ const InputMap = () => {
     const data = await res.json();
     console.log(data);
     setIsPlay(true);
+    handleInput("");
+    changeClear();
   }
 
   useEffect(() => {
@@ -48,7 +53,7 @@ const InputMap = () => {
         type="text"
         placeholder="Topic..."
         value={inputTopic}
-        onChange={e => handleFetch(e.target.value)}
+        onChange={e => handleInput(e.target.value)}
       />
       <div className="input-btns">
         {isPlay ? (

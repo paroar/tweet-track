@@ -4,10 +4,14 @@ import "./sass/main.scss";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import { LocationContextProvider } from "./context/LocationContext";
+import { ClearContextProvider } from "./context/ClearContext";
+
 
 ReactDOM.render(
     <LocationContextProvider>
-        <App />
+        <ClearContextProvider>
+            <App/>
+        </ClearContextProvider>
     </LocationContextProvider>
     , document.getElementById("root"));
 
