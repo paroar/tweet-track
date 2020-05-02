@@ -5,9 +5,22 @@ type TweetProps = {
   tweet: any;
 };
 
+const COLORS = ["#2AAD27", "#CB2B3E", "#FFD326"];
+
 const Tweet: React.FC<TweetProps> = ({ tweet }) => {
+
+  const tweetColor = () => {
+    if(tweet.sentiment === 0){
+      return COLORS[2];
+    } else if(tweet.sentiment > 0){
+      return COLORS[0];
+    }else{
+      return COLORS[1];
+    }
+  }
+
   return (
-    <TweetStyled color={tweet.color}>
+    <TweetStyled color={tweetColor()}>
       <div className="tweet">
         <div className="tweet--user">
           <img

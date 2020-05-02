@@ -1,23 +1,30 @@
-const Sentiment = require("sentiment");
+const Analyzer = require('natural').SentimentAnalyzer;
+const stemmer = require('natural').PorterStemmer;
+
+const langTable = {
+  en: "English",
+  es: "Spanish"
+}
 
 module.exports = (tweet, app) => {
-  let sentiment = new Sentiment();
-  let result = {};
-  if (tweet.extended_tweet) {
-    result = sentiment.analyze(tweet.extended_tweet.full_text);
-  } else {
-    result = sentiment.analyze(tweet.text);
+
+  let score = 0;
+
+  if(typeof langTable[tweet.lang] !== "undefined"){
+    const analyzer = new Analyzer(langTable[tweet.lang], stemmer, "afinn");
+    if (tweet.extended_tweet) {
+      score = analyzer.getSentiment(tweet.extended_tweet.full_text.split(" "));
+    } else {
+      score = analyzer.getSentiment(tweet.text.split(" "));
+    }
   }
-  tweet.sentiment = result.comparative;
-  const score = tweet.sentiment;
+  tweet.sentiment = score;
+
   if (score === 0) {
-    tweet.color = "#FBBC05";
     app.locals.neutral++;
   } else if (score > 0) {
-    tweet.color = "#34A853";
     app.locals.good++;
   } else {
-    tweet.color = "#EA4335";
     app.locals.bad++;
   }
   return tweet;
