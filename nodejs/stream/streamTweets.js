@@ -11,6 +11,9 @@ const logstashUrl = {
   mongo: "http://logstashmongo:5001"
 }
 
+const bodyParser = require("body-parser");
+
+
 module.exports = (app, io) => {
 
   let tStream = null;
@@ -54,7 +57,7 @@ module.exports = (app, io) => {
       fetch(url, {
         method: 'post',
         body: JSON.stringify(tempTweet),
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' }
       }).catch(err => console.log(err));
     });
   };
@@ -66,38 +69,48 @@ module.exports = (app, io) => {
     app.locals.neutral = 0;
   };
 
-  app.get("/changeTopic", cors(), (req, res) => {
+  app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+  });
+  app.use(bodyParser.urlencoded({ extended: false }))
+  app.use(bodyParser.json())
+
+
+  app.post("/changeTopic", (req, res) => {
     tStream && tStream.stop();
-    topic = req.query.topic;
-    res.json({
+    topic = req.body.topic;
+    res.status(200).send({
       status: "success",
       action: "changeTopic",
       topic: topic
     });
   });
 
-  app.get("/play", cors(), (req, res) => {
-    res.status(200).json({
+  app.post("/play", (req, res) => {
+    res.status(200).send({
       status: "success",
       action: "play"
     });
     stream();
   });
 
-  app.get("/pause", cors(), (req, res) => {
+  app.post("/pause", (req, res) => {
     tStream && tStream.stop();
-    res.json({
+    res.status(200).send({
       status: "success",
       action: "paused"
     });
   });
 
-  app.get("/stop", cors(), (req, res) => {
+  app.post("/stop", (req, res) => {
     tStream && tStream.stop();
     resetLocalCount();
-    res.json({
+    res.status(200).send({
       status: "success",
       action: "stoped"
     });
   });
+
 };

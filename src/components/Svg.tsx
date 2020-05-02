@@ -3,16 +3,16 @@ import sprite from "../img/sprite.svg";
 import styled from "styled-components";
 
 type SvgProps = {
-  class?: string;
+  classType?: string;
   iconName: string;
   color?: string;
 };
 
 const Svg: React.FC<SvgProps> = props => {
-  const { iconName, color } = props;
+  const { iconName, color, classType } = props;
 
   return (
-    <SvgStyled className={`icon ${iconName}`} fill={color ? color : ""}>
+    <SvgStyled className={`icon ${iconName} ${classType}`} fill={color ? color : ""}>
       <use href={`${sprite}#${iconName}`} />
     </SvgStyled>
   );

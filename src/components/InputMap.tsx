@@ -2,44 +2,60 @@ import React, { useState, useEffect, useContext } from "react";
 import Svg from "./Svg";
 import { ClearContext } from "../context/ClearContext";
 
+const headers = {
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+  },
+  method: "POST"
+}
+
 const InputMap = () => {
   const [inputTopic, setInputTopic] = useState("");
   const [isPlay, setIsPlay] = useState(true);
 
   const { changeClear } = useContext(ClearContext);
 
-  async function handleInput(input: string) {
+  const handleInput = (input: string) => {
+    const inputHeaders = {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      method: "POST",
+      body: JSON.stringify({ topic: inputTopic })
+    }
     setInputTopic(input.trim());
-    const res = await fetch(`http://localhost:8080/changeTopic?topic=${inputTopic}`);
-    const data = await res.json();
-    console.log(data);
+    fetch("http://localhost:8080/changeTopic", inputHeaders)
+      .then(res => console.log(res))
+      .catch(err => console.log(err))
     setIsPlay(true);
   }
 
-  async function handlePlay() {
+  const handlePlay = () => {
     if (inputTopic !== "") {
       handleInput(inputTopic);
-      const res = await fetch(`http://localhost:8080/play`);
-      const data = await res.json();
-      console.log(data);
+      fetch("http://localhost:8080/play", headers)
+        .then(res => console.log(res))
+        .catch(err => console.log(err))
       setIsPlay(false);
     }
   }
 
-  async function handlePause() {
-    const res = await fetch(`http://localhost:8080/pause`);
-    const data = await res.json();
-    console.log(data);
+  const handlePause = () => {
+    fetch("http://localhost:8080/pause", headers)
+      .then(res => console.log(res))
+      .catch(err => console.log(err))
     setIsPlay(true);
   }
 
-  async function handleStop() {
-    const res = await fetch(`http://localhost:8080/stop`);
-    const data = await res.json();
-    console.log(data);
-    setIsPlay(true);
+  const handleStop = () => {
+    fetch("http://localhost:8080/stop", headers)
+      .then(res => console.log(res))
+      .catch(err => console.log(err))
     handleInput("");
     changeClear();
+    setIsPlay(true);
   }
 
   useEffect(() => {
@@ -58,16 +74,26 @@ const InputMap = () => {
       <div className="input-btns">
         {isPlay ? (
           <span onClick={handlePlay} className="svgSpan">
-            <Svg iconName="icon-controller-play" class="controller-play"/>
+            <Svg iconName="icon-controller-play" classType="controller-play" />
           </span>
         ) : (
-          <span onClick={handlePause} className="svgSpan">
-            <Svg iconName="icon-controller-paus" class="controller-paus"/>
-          </span>
-        )}
-        <span onClick={handleStop} className="svgSpan">
-          <Svg iconName="icon-controller-stop" class="controller-paus"/>
-        </span>
+            <span onClick={handlePause} className="svgSpan">
+              <Svg iconName="icon-controller-paus" classType="controller-paus" />
+            </span>
+          )}
+        {isPlay ?
+          (
+            <span onClick={handleStop} className="svgSpan">
+              <Svg iconName="icon-controller-stop" classType="controller-paus" />
+            </span>
+          ) : (
+            <span className="svgSpan">
+              <Svg iconName="icon-controller-stop" color="lightgrey" classType="disabled"/>
+            </span>
+          )
+
+        }
+
       </div>
     </div>
   );
