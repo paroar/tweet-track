@@ -68,8 +68,7 @@ services:
       - elastic
   logstash:
     depends_on: [es01,es02,es03]
-    build:
-      context: docker/logstash/elasticsearch
+    image: docker.elastic.co/logstash/logstash:${ELK_VERSION}
     container_name: logstash
     volumes:
       - ./docker/logstash/elasticsearch/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
@@ -98,8 +97,7 @@ services:
       - datanorm    
   mongo:
     container_name: mongo
-    build:
-      context: docker/mongo/
+    image: mongo:latest
     ports:
       - 27017:27017
     volumes:
