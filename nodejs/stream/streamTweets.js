@@ -44,7 +44,7 @@ module.exports = (app, io) => {
   const sendMessage = msg => {
     const tempTweet = sentiment(msg, app);
     const reducedTweet = reduceTweet(tempTweet);
-    
+
     //sockets
     io.sockets.emit("tweets", reducedTweet);
     io.sockets.emit("count", {
@@ -72,7 +72,9 @@ module.exports = (app, io) => {
     app.locals.neutral = 0;
   };
 
-  /*ROUTES*/
+  /*ROUTES
+  TODO: MOVE TO ROUTES FOLDER
+  */
   app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
