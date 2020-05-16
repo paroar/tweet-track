@@ -31,8 +31,20 @@ const yellowIcon = L.icon({
   shadowSize: [41, 41]
 });
 
+type TweetType = {
+  id: string,
+  id_str: string,
+  name: string,
+  screen_name: string,
+  profile_image_url: string,
+  description: string,
+  sentiment: number,
+  text: string,
+  place: number[][][]
+}
+
 type SimpleMapProps = {
-  tweets: any[];
+  tweets: TweetType[];
   clearStop: () => void
 }
 
@@ -42,14 +54,14 @@ const SimpleMap: React.FC<SimpleMapProps> = (props) => {
   const { clear } = useContext(ClearContext);
 
 
-  const [modalInfo, setModalInfo] = useState({});
+  const [modalInfo, setModalInfo] = useState<TweetType>();
   const [isModalShowing, setIsModalShowing] = useState(false);
 
   useEffect(() => {
     props.clearStop();
   }, [clear]);
 
-  const handleModal = (tweet: any) => {
+  const handleModal = (tweet: TweetType) => {
     setModalInfo(tweet);
     setIsModalShowing(true);
   };
@@ -70,7 +82,7 @@ const SimpleMap: React.FC<SimpleMapProps> = (props) => {
 
   return (
     <div>
-      {isModalShowing ? (
+      {isModalShowing && modalInfo ? (
         <Modal closeModal={closeModal}>
           <Tweet tweet={modalInfo} />
         </Modal>
@@ -85,20 +97,20 @@ const SimpleMap: React.FC<SimpleMapProps> = (props) => {
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           />
 
-          {props.tweets.map((t: any) => (
-              <Marker
-                position={[
-                  t.place.bounding_box.coordinates[0][0][1],
-                  t.place.bounding_box.coordinates[0][0][0]
-                ]}
-                key={t.id}
-                icon={handleIconColor(t.sentiment)}
-              >
-                <Popup>
-                  <div onClick={() => handleModal(t)}>{t.text}</div>
-                </Popup>
-              </Marker>
-            ))}
+          {props.tweets.map((t: TweetType) => (
+            <Marker
+              position={[
+                t.place[0][0][1],
+                t.place[0][0][0]
+              ]}
+              key={t.id}
+              icon={handleIconColor(t.sentiment)}
+            >
+              <Popup>
+                <div onClick={() => handleModal(t)}>{t.text}</div>
+              </Popup>
+            </Marker>
+          ))}
         </Map>
       </div>
     </div>

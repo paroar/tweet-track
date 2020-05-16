@@ -2,9 +2,7 @@ const twitter = require("./twitter.js");
 const T = twitter.getT();
 
 const sentiment = require("../sentiment/sentimentAnalysis.js");
-
-const cors = require("cors");
-
+const reduceTweet = require("../reduce/reduceTweet");
 const fetch = require("node-fetch");
 const logstashUrl = {
   es: "http://logstash:5000",
@@ -18,13 +16,15 @@ module.exports = (app, io) => {
 
   let tStream = null;
   let topic = null;
-
+  app.locals.count = 1;
+  app.locals.good = 0;
+  app.locals.bad = 0;
+  app.locals.neutral = 0;
+  
   io.on("connection", socket => {
     console.log("Client connected");
-    resetLocalCount();
     socket.on("disconnect", () => {
       console.log("Client disconnected");
-      resetLocalCount();
     });
   });
 
@@ -39,11 +39,14 @@ module.exports = (app, io) => {
     tStream = stream;
   };
 
+
+  /*DISTRIBUTE MSG*/
   const sendMessage = msg => {
     const tempTweet = sentiment(msg, app);
-
+    const reducedTweet = reduceTweet(tempTweet);
+    
     //sockets
-    io.sockets.emit("tweets", tempTweet);
+    io.sockets.emit("tweets", reducedTweet);
     io.sockets.emit("count", {
       count: app.locals.count,
       good: app.locals.good,
@@ -69,6 +72,7 @@ module.exports = (app, io) => {
     app.locals.neutral = 0;
   };
 
+  /*ROUTES*/
   app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");

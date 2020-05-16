@@ -1,18 +1,38 @@
 import React from "react";
 import styled from "styled-components";
 
-type TweetProps = {
-  tweet: any;
-};
+type TweetType = {
+  tweet:{
+  id: string,
+  id_str: string,
+  name: string,
+  screen_name: string,
+  profile_image_url: string,
+  description: string,
+  sentiment: number,
+  text: string,
+  place: number[][][]
+  }
+}
 
 const COLORS = ["#2AAD27", "#CB2B3E", "#FFD326"];
 
-const Tweet: React.FC<TweetProps> = ({ tweet }) => {
+const Tweet: React.FC<TweetType> = (props) => {
+
+  const {
+    id_str, 
+    name, 
+    screen_name, 
+    profile_image_url, 
+    description, 
+    sentiment, 
+    text
+  } = props.tweet;
 
   const tweetColor = () => {
-    if(tweet.sentiment === 0){
+    if(sentiment === 0){
       return COLORS[2];
-    } else if(tweet.sentiment > 0){
+    } else if(sentiment > 0){
       return COLORS[0];
     }else{
       return COLORS[1];
@@ -24,30 +44,30 @@ const Tweet: React.FC<TweetProps> = ({ tweet }) => {
       <div className="tweet">
         <div className="tweet--user">
           <img
-            src={tweet.user.profile_image_url}
+            src={profile_image_url}
             alt=""
             className="tweet--user__img"
           />
 
           <div>
-            {tweet.user.name}
+            {name}
             <br />
             <a
-              href={`https://twitter.com/${tweet.user.screen_name}`}
+              href={`https://twitter.com/${screen_name}`}
               target="blank"
             >
-              @{tweet.user.screen_name}
+              @{screen_name}
             </a>
           </div>
-          <p className="tweet--user__desc">{tweet.user.description}</p>
+          <p className="tweet--user__desc">{description}</p>
         </div>
 
         <p className="tweet--text">
           <a
-            href={`https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`}
+            href={`https://twitter.com/${screen_name}/status/${id_str}`}
             target="blank"
           >
-            {tweet.extended_tweet ? tweet.extended_tweet.full_text : tweet.text}
+            {text}
           </a>
         </p>
       </div>
