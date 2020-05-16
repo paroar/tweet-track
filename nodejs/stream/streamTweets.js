@@ -1,15 +1,15 @@
+require('dotenv').config()
 const twitter = require("./twitter.js");
 const T = twitter.getT();
-
 const sentiment = require("../sentiment/sentimentAnalysis.js");
 const reduceTweet = require("../reduce/reduceTweet");
 const fetch = require("node-fetch");
-const logstashUrl = {
-  es: "http://logstash:5000",
-  mongo: "http://logstashmongo:5001"
-}
-
 const bodyParser = require("body-parser");
+
+const logstashUrls = {
+  es: `http://logstash:${process.env.LOGSTASH_ES_PORT}`,
+  mongo: `http://logstashmongo:${process.env.LOGSTASH_MONGO_PORT}`
+}
 
 
 module.exports = (app, io) => {
@@ -56,7 +56,7 @@ module.exports = (app, io) => {
     app.locals.count++;
 
     //logstash
-    Object.values(logstashUrl).forEach( url => {
+    Object.values(logstashUrls).forEach( url => {
       fetch(url, {
         method: 'post',
         body: JSON.stringify(tempTweet),
