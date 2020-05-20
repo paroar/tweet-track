@@ -1,44 +1,75 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<p align="center">
+  <a href="http://www.youtube.com/watch?v=z7r2QJebAxo" target="_blank"><img src="./resources/header-logo.png"/></a>
+</p>
 
-## Available Scripts
 
-In the project directory, you can run:
+Overview
+========
+This is an application made for my Certificate of Higher Education (HNC). In this project, I attempted to learn the basics of big data and ETL, learning about the inconveniences of working with masive datasets and how to use the latests technologies to overcome them.
 
-### `yarn start`
+The project seizes data extraction, transformation and storage, and how to show data at realtime on a map via websockets.
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Feel free to use this project.
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
 
-### `yarn test`
+Prerequisites
+============
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Before you continue, ensure you met the following requirements:
 
-### `yarn build`
+ * You have installed Docker.
+ * You have installed Node.
+ * You have a Twitter developer account.
+ * Your machine has lots of ram 8GB+.
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+Env configuration file
+======================
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+You must include an .env file configuration at root folder.<br> 
 
-### `yarn eject`
+It is not encouraged to change fields except CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN and ACCESS_TOKEN_SECRET as some settings are not yet fully implemented.<br>
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Should look something like this:
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```
+CONSUMER_KEY=ofutlGwF5bQb9zuMYtZJV5Ein
+CONSUMER_SECRET=OTuI0BzYJDBHZpAHEuZt5TAxxFAAGbakSuRIUgvtHUZx7p2CHP
+ACCESS_TOKEN=2316541718818398969-5zzhoW43OQnS6yo9Dy2fg7XgnCh5HM
+ACCESS_TOKEN_SECRET=EYlYaXEJsMqBbd1kslGKkyBWxMNHGZRaO2YONqn42Bv2D
+ELK_VERSION=7.6.2
+ES_JAVA_OPTS=-Xmx1024m -Xms1024m
+LS_JAVA_OPTS=-Xmx1024m -Xms1024m
+NODE_PORT=8080
+LOGSTASH_ES_PORT=5000
+LOGSTASH_MONGO_PORT=5001
+KIBANA_PORT=5601
+DB_NAME=twitter
+MONGO_PORT=27017
+ELASTICSEARCH_PORT=9200
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+Installation
+====================
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+Install dependencies:
 
-## Learn More
+```sh
+$ npm install
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Usage
+=========
+
+Launch frontend:
+
+```sh
+$ npm start
+```
+
+Launch services:
+
+```sh
+$ docker-compose up
+```
